@@ -1,0 +1,35 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+langchain==0.3.7
+langchain-openai==0.2.9
+langchain-community==0.3.7
+langchain-chroma==0.1.4
+langgraph==0.2.76
+# Sync SqliteSaver checkpointer (stdlib sqlite3). NOTE: this package also
+# pulls aiosqlite for its ASYNC saver, which is broken against aiosqlite>=0.20
+# (calls a removed Connection.is_alive); we use the SYNC saver only, so that
+# path is never imported. See core/graph/build.py.
+langgraph-checkpoint-sqlite==2.0.11
+chromadb==0.5.20
+# Sync HTTP client for the Google Books metadata lookup (core/books_api.py).
+# Already pulled transitively by fastapi/langchain; pinned here so the
+# recommendation pipeline's dependency is explicit.
+httpx==0.27.2
+pydantic==2.9.2
+pydantic-settings==2.6.1
+python-dotenv==1.0.1
+PyMuPDF==1.24.13
+ebooklib==0.18
+beautifulsoup4==4.12.3
+# langchain 0.3.7 requires numpy<2.0 on Python >= 3.12; this pin was
+# >=2.0,<2.2 before, which made requirements.txt unsatisfiable from
+# scratch (the old venv predated the pin and never re-resolved).
+numpy>=1.26,<2.0
+scikit-learn==1.5.2
+reportlab==4.2.5
+slowapi==0.1.9
+aiofiles==24.1.0
+python-multipart==0.0.12
+pytest==8.3.3
+pytest-asyncio==0.24.0
+langchain-text-splitters==0.3.2

@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --background: #120e0a;
+  --foreground: #f7f0e4;
+  --surface-rgb: 35 26 20;
+  --surface-strong-rgb: 26 19 15;
+  --surface-border-rgb: 255 233 208;
+  --surface-highlight-rgb: 201 161 112;
+  --muted-foreground: #c8bbab;
+  --soft-foreground: #a7927b;
+  --hero-tint: #6f4f38;
+  --hero-shadow: #1b1410;
+}
+
+/* Drop the focus outline left stuck after a MOUSE click (the "white frame"
+   that lingers on a button after you click it); keep it for KEYBOARD
+   navigation via :focus-visible, so accessibility is intact. App-wide. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+html {
+  background:
+    radial-gradient(circle at top, rgba(111, 79, 56, 0.18), transparent 38%),
+    linear-gradient(180deg, #17110d 0%, #100b08 55%, #0d0907 100%);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Warm, transparent scrollbar — replaces the default OS slate-grey-
+     on-white scrollbar with a thin amber-cream thumb on a transparent
+     track. Color matches the amber-100 / glass-panel border vocabulary
+     used elsewhere; hover state nudges alpha up so it surfaces when the
+     user is actively scrolling. */
+  .scrollbar-warm {
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(254, 243, 199, 0.18) transparent;
+  }
+
+  .scrollbar-warm::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-warm::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-warm::-webkit-scrollbar-thumb {
+    background-color: rgba(254, 243, 199, 0.18);
+    border-radius: 3px;
+  }
+
+  .scrollbar-warm::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(254, 243, 199, 0.32);
+  }
+}
+
+@layer components {
+  .hero-background {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(16, 11, 8, 0.10) 0%, rgba(9, 7, 5, 0.22) 100%),
+      url('/backgrounds/sagespace-bg2.png');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .hero-background::before,
+  .hero-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero-background::before {
+    z-index: -2;
+    background:
+      linear-gradient(180deg, rgba(12, 8, 6, 0.05) 0%, rgba(10, 8, 6, 0.10) 44%, rgba(9, 7, 5, 0.26) 100%),
+      radial-gradient(circle at 50% 16%, rgba(255, 239, 214, 0.10), transparent 22%),
+      radial-gradient(circle at 50% 54%, rgba(73, 51, 36, 0.10), transparent 54%);
+  }
+
+  .hero-background::after {
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(13, 9, 7, 0.02) 0%, rgba(13, 9, 7, 0.06) 34%, rgba(10, 8, 6, 0.20) 100%),
+      linear-gradient(90deg, rgba(10, 8, 6, 0.14) 0%, rgba(10, 8, 6, 0.0) 20%, rgba(10, 8, 6, 0.0) 80%, rgba(10, 8, 6, 0.12) 100%);
+  }
+
+  .hero-background > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Chat-page background — companion painting to the Bookshelf hero.
+     Identical overlay strategy so the two pages feel like one room with
+     two views. The image file is sagespace-chat.png; while it is
+     missing the page falls back to the solid deep walnut --background
+     and still reads correctly. */
+  .chat-background {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(16, 11, 8, 0.10) 0%, rgba(9, 7, 5, 0.22) 100%),
+      url('/backgrounds/sagespace-chat.png');
+    background-color: var(--background);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .chat-background::before,
+  .chat-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .chat-background::before {
+    z-index: -2;
+    background:
+      linear-gradient(180deg, rgba(12, 8, 6, 0.05) 0%, rgba(10, 8, 6, 0.10) 44%, rgba(9, 7, 5, 0.26) 100%),
+      radial-gradient(circle at 50% 16%, rgba(255, 239, 214, 0.10), transparent 22%),
+      radial-gradient(circle at 50% 54%, rgba(73, 51, 36, 0.10), transparent 54%);
+  }
+
+  /* Stronger scrim than hero-background — chat has dense text everywhere,
+     so the painting needs to retreat to atmosphere rather than compete
+     with the prose. The bookshelf is mostly card chrome on top of the
+     image, but here the textarea, message stream, and top bar all need
+     readable contrast against whatever pixels happen to be behind them. */
+  .chat-background::after {
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(10, 7, 5, 0.45) 0%, rgba(10, 7, 5, 0.24) 50%, rgba(10, 7, 5, 0.62) 100%),
+      linear-gradient(90deg, rgba(10, 8, 6, 0.22) 0%, rgba(10, 8, 6, 0.06) 20%, rgba(10, 8, 6, 0.06) 80%, rgba(10, 8, 6, 0.20) 100%);
+  }
+
+  .chat-background > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Reading Map background — different image from chat, frosted dark
+     blur over the WHOLE page (not just the top bar). The bg image is on
+     a -2 layer; a darker scrim with backdrop-filter:blur sits at -1 so
+     the page-level blur happens behind every panel/column. Content
+     (children of the outer div) sits at z-index 1 above both. */
+  .reading-map-background {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--background);
+  }
+
+  .reading-map-background::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url('/backgrounds/sagespace-reading-map.png');
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .reading-map-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(10, 7, 5, 0.50);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .reading-map-background > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content-shell {
+    position: relative;
+  }
+
+  .hero-content-shell::before {
+    content: none;
+  }
+
+  .glass-panel {
+    background: linear-gradient(180deg, rgba(var(--surface-rgb), 0.68), rgba(var(--surface-strong-rgb), 0.58));
+    border: 1px solid rgba(var(--surface-border-rgb), 0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 248, 239, 0.12),
+      0 16px 38px rgba(7, 5, 4, 0.24);
+  }
+
+  .glass-panel-soft {
+    background: linear-gradient(180deg, rgba(var(--surface-rgb), 0.48), rgba(var(--surface-strong-rgb), 0.34));
+    border: 1px solid rgba(var(--surface-border-rgb), 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 248, 239, 0.08),
+      0 14px 32px rgba(7, 5, 4, 0.18);
+  }
+
+  /* Reading-surface cards (For you / Want to read / What I remember). More
+     opaque than the base glass so the light/muted text stays readable over the
+     bright patches of the hero painting. Literal rgba (NOT the rgba(var(...))
+     form) so there is no space-vs-comma color-syntax gotcha that would silently
+     drop the background. Tune --card-opacity (0.0 transparent .. 1.0 solid). */
+  .reading-surface {
+    --card-opacity: 0.7;
+    background: linear-gradient(
+      180deg,
+      rgba(35, 26, 20, var(--card-opacity)),
+      rgba(26, 19, 15, var(--card-opacity))
+    );
+    border: 1px solid rgba(255, 233, 208, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 248, 239, 0.10),
+      0 16px 38px rgba(7, 5, 4, 0.32);
+  }
+
+  .hero-button {
+    background: linear-gradient(135deg, rgba(158, 109, 64, 0.92), rgba(110, 71, 39, 0.92));
+    border: 1px solid rgba(247, 224, 195, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 249, 240, 0.24),
+      0 14px 32px rgba(50, 29, 14, 0.26);
+  }
+
+  /* Sage's message bubble — walnut surface with a soft amber underlight
+     glow at the bottom edge, as if the words are emerging from warm
+     candle/firelight. Asymmetric corner (bottom-left squared off)
+     deliberately distinguishes it from a generic chat bubble and the
+     user bubble's symmetric pill. */
+  .sage-bubble {
+    background:
+      radial-gradient(ellipse at 50% 110%, rgba(158, 109, 64, 0.22), transparent 60%),
+      linear-gradient(180deg, rgba(35, 26, 20, 0.88), rgba(26, 19, 15, 0.92));
+    border: 1px solid rgba(247, 224, 195, 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 248, 239, 0.08),
+      0 12px 28px rgba(7, 5, 4, 0.32);
+  }
+
+}
+
+@media (max-width: 768px) {
+  @layer components {
+    .hero-background {
+      background-position: 56% center;
+    }
+
+    .hero-content-shell::before {
+      border-radius: 1.5rem;
+    }
+  }
+}

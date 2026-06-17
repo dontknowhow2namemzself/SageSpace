@@ -1,0 +1,2 @@
+streamlit==1.57.0
+chromadb==0.5.20
