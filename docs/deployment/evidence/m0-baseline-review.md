@@ -103,9 +103,11 @@ claims:
 - Startup now creates and validates the complete persistent data-directory
   layout before initializing SQLite; importing the ingestion route no longer
   creates directories as a side effect.
-- CORS parsing, strict environment booleans, and configurable chat/ingestion
-  limits have executable offline tests. Invalid values fail at startup rather
-  than silently weakening the intended control.
+- CORS parsing rejects wildcards and non-origin values; strict environment
+  booleans and configurable chat/ingestion limits have executable offline
+  tests. Invalid values fail at startup rather than silently weakening the
+  intended control. A real request probe verifies ingestion returns 429 on the
+  second request when a one-request limit is enabled, but not when disabled.
 - Export tests now patch the real data-root seam and verify the complete file
   response. Cover tests verify the configured public application URL.
 - ChromaDB and ONNX Runtime telemetry default to disabled before their modules
@@ -126,7 +128,7 @@ claims:
 | Python 3.12.13 runtime and `.venv` | Pass |
 | Node 24.19.0 and npm 11.17.0 runtime | Pass |
 | Python dependency installation and `uv pip check` | Pass (134 packages; compatible) |
-| Backend tests | Pass (551 passed, 5 skipped, 3 expected convergence warnings) |
+| Backend tests | Pass (556 passed, 5 skipped, 3 expected convergence warnings) |
 | Frontend `npm ci` | Pass (484 packages installed) |
 | Full npm security audit | Blocked for production (8 high; planned M1 upgrade) |
 | Production-only npm security audit | Blocked for production (3 high; planned M1 upgrade) |

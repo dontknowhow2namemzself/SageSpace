@@ -110,6 +110,15 @@ def test_generate_cover_writes_png(covers_dir):
     assert "Some Book" in body["messages"][0]["content"]
 
 
+def test_generate_cover_uses_configured_public_url(covers_dir, monkeypatch):
+    monkeypatch.setenv("PUBLIC_APP_URL", "https://demo.example")
+    client = _FakeClient(_ok_response())
+
+    cover.generate_cover("book_abc", "Some Book", client=client)
+
+    assert client.last_headers["HTTP-Referer"] == "https://demo.example"
+
+
 # ── Soft-failure paths ─────────────────────────────────────────────────────
 
 def test_missing_api_key_returns_none(covers_dir, monkeypatch):

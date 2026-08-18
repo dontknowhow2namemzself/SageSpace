@@ -1,12 +1,11 @@
-from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from models.schemas import ExportRequest
 from core import database as db
+from core.paths import DATA_DIR
 from core.tools import run_export
 
 router = APIRouter()
-EXPORT_DIR = Path(__file__).parent.parent / "exports"
 
 
 @router.post("/export")
@@ -23,7 +22,7 @@ def export_notes(req: ExportRequest):
     if not result.get("available"):
         raise HTTPException(status_code=500, detail="Export failed")
 
-    full_path = Path(__file__).parent.parent / result["path"].lstrip("/")
+    full_path = DATA_DIR / result["path"].lstrip("/")
     if not full_path.exists():
         raise HTTPException(status_code=500, detail="Export failed")
 
