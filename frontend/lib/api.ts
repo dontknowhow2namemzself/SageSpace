@@ -8,7 +8,9 @@ import type {
   SessionSummary,
 } from './types'
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// ?? (not ||): production builds set NEXT_PUBLIC_API_URL="" for same-origin
+// requests through the nginx proxy — the empty string must survive.
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
 
 /** Error carrying the HTTP status so callers can branch on it
  *  (e.g. 409 = legacy-index book) instead of substring-matching
