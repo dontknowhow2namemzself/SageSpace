@@ -31,7 +31,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from langchain_core.callbacks import get_usage_metadata_callback
 from langgraph.types import Command
@@ -41,6 +41,7 @@ from models.schemas import ChatRequest, ResumeRequest
 from core import database as db
 from core.graph import get_chat_graph
 from core.pipeline.finalize import persist_usage_from_callback
+from core.ratelimit import CHAT_RATE_LIMIT, limiter
 
 
 router = APIRouter()
@@ -117,7 +118,8 @@ def delete_session(session_id: str):
 
 
 @router.post("/chat")
-async def chat(req: ChatRequest):
+@limiter.limit(CHAT_RATE_LIMIT)
+async def chat(request: Request, req: ChatRequest):
     # Tag every log line in this request (and every downstream LangGraph
     # node — contextvars propagate through await) with the IDs that
     # uniquely identify this turn. Set as early as possible so a 404
@@ -177,7 +179,8 @@ async def chat(req: ChatRequest):
 
 
 @router.post("/chat/resume")
-async def chat_resume(req: ResumeRequest):
+@limiter.limit(CHAT_RATE_LIMIT)
+async def chat_resume(request: Request, req: ResumeRequest):
     """Resume a turn paused at a clarify interrupt with the user's answer."""
     from core.observability import book_id_var, session_id_var
     session_id_var.set(req.session_id)

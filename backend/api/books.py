@@ -102,9 +102,8 @@ def delete_book(book_id: str):
 
     try:
         import chromadb
-        from pathlib import Path
-        chroma_dir = str(Path(__file__).parent.parent / "chroma_db")
-        client = chromadb.PersistentClient(path=chroma_dir)
+        from core.raptor import CHROMA_DIR
+        client = chromadb.PersistentClient(path=CHROMA_DIR)
         client.delete_collection(f"book_{book_id}")
     except Exception:
         pass

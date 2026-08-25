@@ -26,11 +26,13 @@ from typing import Optional
 
 import httpx
 
+from core.paths import DATA_DIR
+
 logger = logging.getLogger(__name__)
 
 MODEL = "google/gemini-2.5-flash-image"
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
-COVERS_DIR = Path(__file__).parent.parent / "uploads" / "covers"
+COVERS_DIR = DATA_DIR / "uploads" / "covers"
 DEFAULT_TIMEOUT = 120.0
 
 # Style lock — INVERTED duotone: dark walnut ground, amber lines.
@@ -117,7 +119,7 @@ def generate_cover(
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:3000",
+        "HTTP-Referer": os.getenv("PUBLIC_APP_URL", "http://localhost:3000"),
         "X-Title": "SageSpace cover",
     }
 

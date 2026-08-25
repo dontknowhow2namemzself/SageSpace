@@ -4,7 +4,9 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent.parent / "sagespace.db"
+from core.paths import DATA_DIR
+
+DB_PATH = DATA_DIR / "sagespace.db"
 
 
 def get_conn() -> sqlite3.Connection:

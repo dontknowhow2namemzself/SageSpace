@@ -36,8 +36,10 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
 
 
+from core.paths import DATA_DIR
+
 RAPTOR_MAX_CLUSTERS = 10
-CHROMA_DIR = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
+CHROMA_DIR = str(DATA_DIR / "chroma_db")
 
 # Section kinds eligible for a level-1 summary. Front-matter (cover /
 # ToC / preface) and back-matter (index / bibliography / colophon) get

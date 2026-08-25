@@ -17,12 +17,14 @@ from pathlib import Path
 import pytest
 
 import core.database as db_module
+import core.tools as tools_module
 from core.tools import compute_reading_progress, run_export
 
 
 @pytest.fixture(autouse=True)
 def isolated_db(tmp_path, monkeypatch):
     monkeypatch.setattr(db_module, "DB_PATH", tmp_path / "test.db")
+    monkeypatch.setattr(tools_module, "DATA_DIR", tmp_path)
     db_module.init_db()
 
 

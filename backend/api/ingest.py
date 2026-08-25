@@ -3,19 +3,20 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import unquote
 
-from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException, Form
+from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException, Form, Request
 
 from core import cover as cover_gen
 from core import database as db
 from core.canonical import db as canonical_db
 from core.canonical.chunker import chunk_blocks
 from core.canonical.ingest import ingest_canonical
+from core.paths import DATA_DIR
 from core.raptor import build_raptor_index
+from core.ratelimit import INGEST_RATE_LIMIT, limiter
 
 
 router = APIRouter()
-UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
-UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR = DATA_DIR / "uploads"
 
 
 _MAX_LABEL_CHARS = 200
@@ -36,7 +37,9 @@ def _sanitize_label(text: str | None, max_len: int = _MAX_LABEL_CHARS) -> str:
 
 
 @router.post("/ingest")
+@limiter.limit(INGEST_RATE_LIMIT)
 async def ingest_book(
+    request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     title: Optional[str] = Form(default=""),

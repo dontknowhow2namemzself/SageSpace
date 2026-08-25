@@ -1,16 +1,18 @@
 import pytest
 from fastapi.testclient import TestClient
 import core.database as db_module
+import core.tools as tools_module
 
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     monkeypatch.setattr(db_module, "DB_PATH", tmp_path / "test.db")
-    # Patch upload/export dirs to tmp
+    # Patch every write path used by these API tests into tmp.
     import api.ingest as ingest_mod
     import api.export as export_mod
     monkeypatch.setattr(ingest_mod, "UPLOAD_DIR", tmp_path / "uploads")
-    monkeypatch.setattr(export_mod, "EXPORT_DIR", tmp_path / "exports")
+    monkeypatch.setattr(export_mod, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(tools_module, "DATA_DIR", tmp_path)
     (tmp_path / "uploads").mkdir()
     (tmp_path / "exports").mkdir()
 
@@ -90,3 +92,21 @@ def test_get_book_content_returns_inline_file(client, tmp_path):
     assert resp.headers["content-type"].startswith("application/pdf")
     assert "inline" in resp.headers.get("content-disposition", "")
     assert resp.content.startswith(b"%PDF-1.4")
+
+
+def test_export_returns_generated_markdown_file(client):
+    book_id = db_module.create_book("Export Book", "Author", "/tmp/export.pdf")
+    session_id = db_module.create_session(book_id)
+    db_module.save_conversation(session_id, """[
+        {"role": "user", "content": "What matters?"},
+        {"role": "assistant", "content": "The verified export path."}
+    ]""")
+
+    resp = client.post(
+        "/api/export", json={"session_id": session_id, "format": "markdown"}
+    )
+
+    assert resp.status_code == 200
+    assert resp.headers["content-type"].startswith("text/markdown")
+    assert "attachment" in resp.headers.get("content-disposition", "")
+    assert b"The verified export path." in resp.content

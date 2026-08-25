@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 
 from core import database as db
+from core.paths import DATA_DIR
 
 
 # ── reading_progress ──────────────────────────────────────────────────────
@@ -80,8 +81,8 @@ def run_export(book_id: str, session_id: str, format: str = "markdown") -> dict:
     book = db.get_book(book_id)
     book_title = book["title"] if book else "Unknown Book"
 
-    export_dir = Path(__file__).parent.parent / "exports"
-    export_dir.mkdir(exist_ok=True)
+    export_dir = DATA_DIR / "exports"
+    export_dir.mkdir(parents=True, exist_ok=True)
     safe_title = "".join(c for c in book_title if c.isalnum() or c in "_ -")[:20]
     filename = f"session_{session_id[:8]}_{safe_title}"
 

@@ -14,7 +14,8 @@ import {
 } from '@/lib/api'
 import { Message, ChatEvent, ProgressData, Book } from '@/lib/types'
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// ?? (not ||): "" means same-origin in production builds (see lib/api.ts)
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
 
 // Empty-state quick prompts. All three route cleanly through the intent
 // classifier: summarize → book_overview, chapter 1 → chapter_summary,
